@@ -3,16 +3,16 @@ from __future__ import (print_function, division,
                         absolute_import, unicode_literals)
 
 # TODO Cambiar línea para no usar *
-from celullarautomata2d import *
+from cellularautomata2d import CellAutomata2D
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors as colors
 
 #TODO:add custom thresold
-class Sandpiles(CelAutomata2D):  
+class Sandpiles(CellAutomata2D):  
     maxheight = 4
     def __init__(self, xlen, ylen, pbc=False, maxheight=4):
-        CelAutomata2D.__init__(self, xlen, ylen, pbc=pbc, dtype=int)
+        CellAutomata2D.__init__(self, xlen, ylen, pbc=pbc, dtype=int)
         self.maxheight = int(maxheight)
 
         # Create auxiliar lattices
