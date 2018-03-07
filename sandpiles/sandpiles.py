@@ -1,33 +1,32 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 from __future__ import (print_function, division, 
                         absolute_import, unicode_literals)
 
-# TODO Cambiar línea para no usar *
 from cellularautomata2d import CellAutomata2D
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors as colors
+from matplotlib import animation
 
-#TODO:add custom thresold
 class Sandpiles(CellAutomata2D):  
-    maxheight = 4
-    def __init__(self, xlen, ylen, pbc=False, maxheight=4):
+
+    def __init__(self, xlen, ylen, pbc=False, maxheight=4, cmap="Reds"):
         CellAutomata2D.__init__(self, xlen, ylen, pbc=pbc, dtype=int)
         self.maxheight = int(maxheight)
 
         # Create auxiliar lattices
         # Stores the modifications in the last step
-        self._auxlatt = np.zeros((self._xlen_bc, self._ylen_bc),
+        self._auxlatt = np.zeros((self._ylen_bc, self._xlen_bc),
                                  dtype=self.dtype)
         # Stores the cells bigger than maxheight in the last step
-        self._collapse = np.zeros((self._xlen_bc, self._ylen_bc),
+        self._collapse = np.zeros((self._ylen_bc, self._xlen_bc),
                                  dtype=self.dtype)
-        # Create colormap
+        # Create colormap for plots
         self.vmincolor = 0 - 0.5
         self.vmaxcolor = 2*maxheight + 0.5
         bounds = np.arange(0, 2*maxheight, 2*maxheight + 1) - 0.5
         self.cnorm = colors.BoundaryNorm(bounds, 256)
-        self.cmap = plt.cm.get_cmap('Reds', 9)
+        self.cmap = plt.cm.get_cmap(cmap, 9)
 
 
     def randomfill(self, minval=0, maxval=None):
@@ -41,6 +40,24 @@ class Sandpiles(CellAutomata2D):
             self.latt[idx] = np.random.randint(self.maxheight, self.maxheight*5)
 
         return
+
+    def randomfill_mass(self, mass):
+        """Fill the lattice randomly up to a given total mass.
+
+        """
+        for i in range(mass):
+            flat_idx = np.random.randint(0, self.size-1)
+            self.latt.flat[flat_idx] += 1
+
+        return
+
+
+    def mass(self):
+        """Return the value of the total mass of the system.
+
+        """
+        lattmass = self.latt.sum()
+        return lattmass
 
 
     def _evolvestep(self):
@@ -85,32 +102,36 @@ class Sandpiles(CellAutomata2D):
 
         """
         if ret_activecells:
-            activecells = np.zeros((self._xlen_bc, self._ylen_bc), dtype=bool)
+            activecells = np.zeros((self._ylen_bc, self._xlen_bc), dtype=bool)
 
         is_active = False
-        #collapse = np.zeros((self._xlen_bc, self._ylen_bc), dtype=self.dtype)
+        #collapse = np.zeros((self._ylen_bc, self._xlen_bc), dtype=self.dtype)
         for i in range(nsteps):
             is_active = self._evolvestep()
 
-#            for (x, y), height in np.ndenumerate(self.latt):
+#            for (y, x), height in np.ndenumerate(self.latt):
 #                if height > self.maxheight:
-#                    self._auxlatt[self._bc(x, y)] -= 4
-#                    self._auxlatt[self._bc(x, y+1)] += 1 
-#                    self._auxlatt[self._bc(x, y-1)] += 1
-#                    self._auxlatt[self._bc(x+1, y)] += 1
-#                    self._auxlatt[self._bc(x-1, y)] += 1
+#                    self._auxlatt[self._bc(y, x)] -= 4
+#                    self._auxlatt[self._bc(y, x+1)] += 1 
+#                    self._auxlatt[self._bc(y, x-1)] += 1
+#                    self._auxlatt[self._bc(y+1, x)] += 1
+#                    self._auxlatt[self._bc(y-1, x)] += 1
 #                    is_active = True
 
         return is_active
 
 
-    def measurecascade(self, maxtime=10000):
+    def measurecascade(self, maxtime=10000, retarray=False):
         """Measure the duration and number of affected cells of a cascade.
 
         Parameters
         ----------
             maxtime : int
                 Maximum number of steps.
+
+            retarray : bool
+                If True, return a bool array with True values in the 
+                cells affected by the cascade.
 
         Returns
         -------
@@ -121,13 +142,14 @@ class Sandpiles(CellAutomata2D):
             cascadesize : int
                 Number of cells affected by the cascade.
 
-            cascadecells : bool array
+            cascadecells : bool array, optional
                 Array with True in the cells affected by the cascade.
+
         """
 
         duration = 0
         # Array of cells in the cascade
-        cascadecells = np.zeros((self._xlen_bc, self._ylen_bc), dtype=bool)
+        cascadecells = np.zeros((self._ylen_bc, self._xlen_bc), dtype=bool)
         active = True
         while active and (duration < maxtime):
             active = self._evolvestep()
@@ -140,7 +162,12 @@ class Sandpiles(CellAutomata2D):
         if active:
             duration = -1
 
-        return duration, cascadesize, cascadecells
+        output = duration, cascade
+
+        if retarray == True:
+            output.append(cascadecells)
+            
+        return output
         
 
     def animatecascade(self, maxtime=10000, steps_per_frame=1, frame_interval=300):
@@ -165,11 +192,11 @@ class Sandpiles(CellAutomata2D):
 
         # Measure the cascade duration (up to maxtime)
         inilatt = np.copy(self.latt)
-        duration, size, cascadearray = self.measurecascade(maxtime=maxtime)
+        duration, size = self.measurecascade(maxtime=maxtime)
         self.latt = inilatt
 
         # Initiliaze array of cells in the cascade
-        cascadearray = np.zeros((self.xlen, self.ylen), dtype=bool)
+        cascadearray = np.zeros((self.ylen, self.xlen), dtype=bool)
 
         # Update function
         def update(i, cascadearray, self, im, im_cluster):
@@ -201,7 +228,7 @@ class Sandpiles(CellAutomata2D):
 
 
 #    def findlimitcycle(self, maxtime=50):
-#        history = np.zeros((maxtime+1, self.xlen, self.ylen))
+#        history = np.zeros((maxtime+1, self.ylen, self.xlen))
 #
 #        foundcycle = False
 #        relaxtime = -1
