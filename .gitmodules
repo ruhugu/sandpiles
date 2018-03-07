@@ -1,0 +1,3 @@
+[submodule "cellularautomata2d"]
+	path = cellularautomata2d
+	url = https://github.com/ruhugu/cellularautomata2d.git
