@@ -41,7 +41,6 @@ for j_sim in range(nsim):
         duration, cascadesize = latt.measurecascade()
         durations[j_sim*(latt.size-1) + cell_idx] = duration
         cascadesizes[j_sim*(latt.size-1) + cell_idx] = cascadesize
-
  
 # Save results
 np.savetxt("cascadedurationsL{0}N{1}.dat".format(L, nsim), durations)

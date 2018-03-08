@@ -162,7 +162,7 @@ class Sandpiles(CellAutomata2D):
         if active:
             duration = -1
 
-        output = duration, cascade
+        output = duration, cascadesize
 
         if retarray == True:
             output.append(cascadecells)

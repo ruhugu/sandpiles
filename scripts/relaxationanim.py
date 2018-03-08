@@ -14,8 +14,8 @@ L = 50  # Lattice length
 
 # Generate the lattice randomly with heights between maxheight and
 # maxrandomval.
-maxrandomval = 5*latt.maxheight
 latt = Sandpiles(L, L)
+maxrandomval = 5*latt.maxheight
 latt.randomfill(minval=latt.maxheight, maxval=5*latt.maxheight)
 
 # Find the relaxation time in order to know the number
@@ -30,12 +30,12 @@ latt.vmaxcolor = maxrandomval + 0.5
 latt.cmap = plt.cm.get_cmap('Reds', maxrandomval + 1)
 
 # Generate the animation
-anim = latt.animate(relaxtime, frame_interval=interval)
+anim = latt.animate(relaxtime)
 
 # Show the animation
 plt.show()
 
-# Save the animation to file
-anim.save("relaxationL{0}.mp4".format(L), dpi=300, fps=20,
-          extra_args=['-vcodec', 'libx264'])
+# Save animation to file (this does not work if plt.show() has been used before)
+#anim.save("relaxationL{0}.mp4".format(L), dpi=300, fps=20,
+#          extra_args=['-vcodec', 'libx264'])
 
