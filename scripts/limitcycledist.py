@@ -62,5 +62,5 @@ ax.set_ylabel("Limit cycle period")
 lgd = ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.17), fancybox=True, 
           shadow=True)
 
-fig.savefig("limitcycledistL{0}N{1}.pdf".format(L, sims_per_m),
+fig.savefig("limitcycledistL{0}N{1}.png".format(L, sims_per_m),
             bbox_extra_artists=(lgd,), bbox_inches='tight')

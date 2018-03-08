@@ -69,5 +69,5 @@ fig_size.legend()
 fig_size.tight_layout()
 
 # Save plots to file
-fig_time.savefig("cascadeduration.pdf")
-fig_size.savefig("cascadesize.pdf")
+fig_time.savefig("cascadeduration.png")
+fig_size.savefig("cascadesize.png")

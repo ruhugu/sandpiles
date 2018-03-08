@@ -56,7 +56,7 @@ plt.loglog(bin_centers, histo)
 ax.set_xlabel("Cascade duration")
 ax.set_ylabel("Frequency")
 fig.tight_layout()
-fig.savefig("cascadedurationL{0}N{1}.pdf".format(L, nsim))
+fig.savefig("cascadedurationL{0}N{1}.png".format(L, nsim))
 
 # Size plot
 size = 3.5
@@ -67,4 +67,4 @@ plt.loglog(bin_centers, histo)
 ax.set_xlabel("Cascade size")
 ax.set_ylabel("Frequency")
 fig.tight_layout()
-fig.savefig("cascadesizeL{0}N{1}.pdf".format(L, nsim))
+fig.savefig("cascadesizeL{0}N{1}.png".format(L, nsim))
