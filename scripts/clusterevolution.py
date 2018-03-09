@@ -29,5 +29,9 @@ anim = latt.animatecascade()
 plt.show()
 
 # Save animation to file (this does not work if plt.show() has been used before)
+# As mp4
 #anim.save("clusterevolutionL{0}.mp4".format(L), dpi=300, fps=fps,
 #          extra_args=['-vcodec', 'libx264'])
+# As GIF (imagemagick must be installed)
+#anim.save("clusterevolutionL{0}.gif".format(L), dpi=150, fps=fps,
+#          writer='imagemagick')
