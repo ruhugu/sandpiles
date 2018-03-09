@@ -10,13 +10,18 @@ This property is called [self-organized criticality](https://en.wikipedia.org/wi
 This python module allows to create, analyse and visualize lattices following this model.
 
 
+## Required packages
+
+This modules requires both [matplotlib](https://matplotlib.org/) and [numpy](http://www.numpy.org/) to be installed.
+
+
 ## Output examples
 
 Period 2 limit cycle in a 20x20 lattice with periodic boundary conditions.
 
 <img src="https://github.com/ruhugu/sandpiles/blob/master/output_examples/lcycle_random.png" alt="Drawing" width="500"/>
 
-Cascade size and period distributions for several lattice sizes:
+Cascade size and period (power law) distributions for several lattice sizes:
 
 <img src="https://github.com/ruhugu/sandpiles/raw/master/output_examples/cascadeduration.png" alt="Drawing" width="600"/>
 <img src="https://github.com/ruhugu/sandpiles/raw/master/output_examples/cascadesize.png" alt="Drawing" width="600"/>
