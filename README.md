@@ -15,7 +15,7 @@ This python module allows to create, analyse and visualize lattices following th
 This modules requires both [matplotlib](https://matplotlib.org/) and [numpy](http://www.numpy.org/) to be installed.
 
 
-## Output examples
+## Some output examples
 
 Period 2 limit cycle in a 20x20 lattice with periodic boundary conditions.
 
