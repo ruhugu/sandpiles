@@ -12,7 +12,7 @@ from sandpiles import Sandpiles
 # Parameters
 L = 20  # Lattice length
 perturbation = 5  # Local perturbation
-nsim = 1250  # Number of experiments
+nsim = 2500  # Number of experiments
 
 # Vectors to store the data
 durations = np.zeros(nsim*L*L)
