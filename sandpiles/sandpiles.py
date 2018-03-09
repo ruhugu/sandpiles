@@ -208,7 +208,7 @@ class Sandpiles(CellAutomata2D):
             return im
 
         # Plot configuration
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(3,3))
         
         ncolors = 2
         cmap_alpha = (plt.get_cmap("Wistia_r"))(np.arange(ncolors))
@@ -219,6 +219,8 @@ class Sandpiles(CellAutomata2D):
         im_cluster = ax.imshow(cascadearray, cmap=cmap_alpha,
                                vmin=0, vmax=1, interpolation=None)
         cbar = fig.colorbar(im, ax=ax)
+
+        fig.tight_layout()
 
         nframes = duration
         anim = animation.FuncAnimation(fig, update, frames=nframes, 
