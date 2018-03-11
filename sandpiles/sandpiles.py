@@ -37,7 +37,7 @@ class Sandpiles(CellAutomata2D):
             maxval = self.maxheight
 
         for idx, height in np.ndenumerate(self.latt):
-            self.latt[idx] = np.random.randint(self.maxheight, self.maxheight*5)
+            self.latt[idx] = np.random.randint(minval, maxval)
 
         return
 
