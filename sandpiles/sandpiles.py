@@ -52,12 +52,12 @@ class Sandpiles(CellAutomata2D):
         return
 
 
-    def mass(self):
-        """Return the value of the total mass of the system.
-
-        """
-        lattmass = self.latt.sum()
-        return lattmass
+#    def mass(self):
+#        """Return the value of the total mass of the system.
+#
+#        """
+#        lattmass = self.latt.sum()
+#        return lattmass
 
 
     def _evolvestep(self):
