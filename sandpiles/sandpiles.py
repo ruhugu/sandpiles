@@ -83,32 +83,29 @@ class Sandpiles(CellAutomata2D):
         return is_active
         
 
-    def evolve(self, nsteps=1, ret_activecells=True): 
-        """Evolve the system in nsteps timesteps.
-            
-        Parameters
-        ----------
-            nsteps : int
-                Number of steps the system will be evolved.
-
-            affectedcells : bool 
-                If True, a bool array with the affected cells will
-                be returned.
-                
-        Returns
-        -------
-            is_active : bool
-                True if the lattice have moved and False otherwise.
-
-        """
-        if ret_activecells:
-            activecells = np.zeros((self._ylen_bc, self._xlen_bc), dtype=bool)
-
-        is_active = False
-        #collapse = np.zeros((self._ylen_bc, self._xlen_bc), dtype=self.dtype)
-        for i in range(nsteps):
-            is_active = self._evolvestep()
-
+#    def evolve(self, nsteps=0): 
+#        """Evolve the system in nsteps timesteps.
+#            
+#        Parameters
+#        ----------
+#            nsteps : int
+#                Number of steps the system will be evolved.
+#
+#            affectedcells : bool 
+#                If True, a bool array with the affected cells will
+#                be returned.
+#                
+#        Returns
+#        -------
+#            is_active : bool
+#                True if the lattice have moved and False otherwise.
+#
+#        """
+#        is_active = False
+#        #collapse = np.zeros((self._ylen_bc, self._xlen_bc), dtype=self.dtype)
+#        for i in range(nsteps):
+#            is_active = self._evolvestep()
+#
 #            for (y, x), height in np.ndenumerate(self.latt):
 #                if height > self.maxheight:
 #                    self._auxlatt[self._bc(y, x)] -= 4
@@ -117,8 +114,8 @@ class Sandpiles(CellAutomata2D):
 #                    self._auxlatt[self._bc(y+1, x)] += 1
 #                    self._auxlatt[self._bc(y-1, x)] += 1
 #                    is_active = True
-
-        return is_active
+#
+#        return is_active
 
 
     def measurecascade(self, maxtime=10000, retarray=False):
