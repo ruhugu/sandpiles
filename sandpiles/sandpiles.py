@@ -37,7 +37,7 @@ class Sandpiles(CellAutomata2D):
             maxval = self.maxheight
 
         for idx, height in np.ndenumerate(self.latt):
-            self.latt[idx] = np.random.randint(minval, maxval)
+            self.latt[idx] = np.random.randint(minval, maxval + 1)
 
         return
 
@@ -192,13 +192,19 @@ class Sandpiles(CellAutomata2D):
         duration, size = self.measurecascade(maxtime=maxtime)
         self.latt = inilatt
 
-        # Initiliaze array of cells in the cascade
+        # Array where True cells are those who belong to the cascade
         cascadearray = np.zeros((self.ylen, self.xlen), dtype=bool)
+        # Array which stores the time at which cells where
+        # affected by the cascade. If -1, the cell has not been
+        # reached by the cascade yet.
+        cascadetime = np.full((self.ylen, self.xlen), -1, dtype=int)
 
         # Update function
         def update(i, cascadearray, self, im, im_cluster):
             self._evolvestep()
-            np.logical_or(cascadearray, (self._auxlatt[self._latt_idx] != 0), 
+#            np.logical_or(cascadearray, (self._auxlatt[self._latt_idx] != 0), 
+#                          cascadearray)
+            cascadetime = np.logical_and(cascadearray, (self._auxlatt[self._latt_idx] != 0), 
                           cascadearray)
             im.set_array(self.latt)
             im_cluster.set_array(cascadearray)
