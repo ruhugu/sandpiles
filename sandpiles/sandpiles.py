@@ -167,7 +167,7 @@ class Sandpiles(CellAutomata2D):
         return output
         
 
-    def animatecascade(self, maxtime=10000, colorsteps=20, steps_per_frame=1,
+    def animatecascade(self, maxtime=100000, steps_per_frame=1,
                        frame_interval=300):
         """Animate the evolution of a cascade.
         
@@ -203,6 +203,38 @@ class Sandpiles(CellAutomata2D):
         # reached by the cascade yet.
         cascadetime = np.full((self.ylen, self.xlen), -1, dtype=int)
 
+        # Create the color norm according to colorsteps
+        # Since arange does not include the endpoint,
+        # sum colorsteps to duration
+#        colorboundaries = np.arange(0., duration + colorsteps, colorsteps)
+#        ncolors = colorboundaries.size - 1
+#        colornorm = colors.BoundaryNorm(colorboundaries, ncolors)
+
+        # Create the colormap
+        originalcmap = "jet"
+        alpha = 0.6  # alpha of the colormap
+        cmap_clist = (plt.get_cmap(originalcmap))(np.linspace(0, 1, 256))
+        cmap_clist[:,-1][:] = alpha  # Set the alpha of all colors
+        cmap_alpha = colors.ListedColormap(cmap_clist)
+        cmap_alpha.set_under(alpha=0.)  # Set the alpha of values under 0
+
+        # Plot configuration
+        fig, ax = plt.subplots(figsize=(5,3))
+        im = ax.imshow(self.latt, cmap="Greys", vmin=self.vmincolor, 
+                       vmax=self.vmaxcolor, interpolation=None)
+        im_cluster = ax.imshow(cascadetime, cmap=cmap_alpha,
+                               vmin=-0.1, vmax=duration,
+                               interpolation=None)
+        # Color bars
+        cbar_time = fig.colorbar(im_cluster, ax=ax)  # Time colorbar
+        cbar_time.set_label("Time")
+        cbar_heigth = fig.colorbar(im, ax=ax)  # Height colorbar
+        cbar_heigth.set_label("Height")
+
+        fig.tight_layout()
+
+        nframes = duration
+        
         # Update function
         def update(i, cascadearray, cascadetime, self, im, im_cluster):
             self._evolvestep()
@@ -214,46 +246,64 @@ class Sandpiles(CellAutomata2D):
             im.set_array(self.latt)
             #im_cluster.set_array(cascadearray)
             im_cluster.set_array(cascadetime)
-            print(cascadetime)
+            #print(cascadearray)
             return im, im_cluster
 
-        # Create the color norm according to colorsteps
-        #ncolors = 256
-        colorboundaries = np.arange(0., duration, colorsteps)
-        ncolors = colorboundaries.size - 1
-        colornorm = colors.BoundaryNorm(colorboundaries,
-                                        ncolors)
+        anim = animation.FuncAnimation(fig, update, frames=nframes, 
+                                       blit=False, fargs=(cascadearray,
+                                       cascadetime, self, im, im_cluster))
+        return anim
+
+
+    def scaleinvariance(self, maxtime=10000):
+        # Array where True cells are those who belong to the cascade
+        cascadearray = np.zeros((self.ylen, self.xlen), dtype=bool)
+        # Array which stores the time at which cells where
+        # affected by the cascade. If -1, the cell has not been
+        # reached by the cascade yet.
+        cascadetime = np.full((self.ylen, self.xlen), -1, dtype=int)
+
+        time = 0
+        active = True
+        while active and (time < maxtime):
+            time += 1
+            active = self._evolvestep()
+            cascadetime += (time + 1)*np.logical_and(
+                                np.logical_not(cascadearray),
+                                self._auxlatt[self._latt_idx] != 0)
+            np.logical_or(cascadearray, (self._auxlatt[self._latt_idx] != 0), 
+                          cascadearray)
+
+        return cascadetime
+
+    def plotcascadetime(self, cascadetime, region=None):
+
+        if region == None:
+            region = self._latt_idx
 
         # Create the colormap
         originalcmap = "jet"
         alpha = 0.6  # alpha of the colormap
-        cmap_clist = (plt.get_cmap(originalcmap))(np.linspace(0, 1, ncolors))
+        cmap_clist = (plt.get_cmap(originalcmap))(np.linspace(0, 1, 256))
         cmap_clist[:,-1][:] = alpha  # Set the alpha of all colors
         cmap_alpha = colors.ListedColormap(cmap_clist)
         cmap_alpha.set_under(alpha=0.)  # Set the alpha of values under 0
 
         # Plot configuration
         fig, ax = plt.subplots(figsize=(5,3))
-        im = ax.imshow(self.latt, cmap="Greys", vmin=self.vmincolor, 
+        im = ax.imshow(self.latt[region], cmap="Greys", vmin=self.vmincolor, 
                        vmax=self.vmaxcolor, interpolation=None)
-        #im_cluster = ax.imshow(cascadearray, cmap=cmap_alpha,
-        #                       vmin=0, vmax=1, interpolation=None)
-        im_cluster = ax.imshow(cascadetime, cmap=cmap_alpha,
-                               #vmin=-1, vmax=duration,
-                               norm = colornorm,
+        im_cluster = ax.imshow(cascadetime[region], cmap=cmap_alpha,
+                               vmin=-0.1, #vmax=duration,
                                interpolation=None)
-        cbart = fig.colorbar(im_cluster, ax=ax)  # Height colorbar
-        cbart.set_label("Time")
-        cbarh = fig.colorbar(im, ax=ax)  # Time colorbar
-        cbarh.set_label("Height")
+        # Color bars
+        cbar_time = fig.colorbar(im_cluster, ax=ax)  # Time colorbar
+        cbar_time.set_label("Time")
+        cbar_heigth = fig.colorbar(im, ax=ax)  # Height colorbar
+        cbar_heigth.set_label("Height")
 
         fig.tight_layout()
 
-        nframes = duration
-        anim = animation.FuncAnimation(fig, update, frames=nframes, 
-                                       blit=False, fargs=(cascadearray,
-                                       cascadetime, self, im, im_cluster))
-        return anim
 
 
 #    def findlimitcycle(self, maxtime=50):
