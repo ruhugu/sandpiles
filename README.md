@@ -30,6 +30,10 @@ Cascade size and period (power law) distributions for several lattice sizes (scr
 <img src="https://github.com/ruhugu/sandpiles/raw/master/output_examples/cascadeduration.png" alt="Drawing" width="600"/>
 <img src="https://github.com/ruhugu/sandpiles/raw/master/output_examples/cascadesize.png" alt="Drawing" width="600"/>
 
+Fractal in a 200x200 lattice created from an initial high square pile in the center with size 2x2 ([script](https://github.com/ruhugu/sandpiles/blob/master/scripts/fractal.py)).
+
+<img src="https://github.com/ruhugu/sandpiles/blob/master/output_examples/fractalL200M100000s2.png" alt="Drawing" width="600"/>
+
 
 ## License
 
